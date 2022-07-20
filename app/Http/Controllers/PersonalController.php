@@ -7,106 +7,63 @@ use Illuminate\Support\Facades\DB;
 
 class PersonalController extends Controller
 {
-    /*public function ListarPersonal()
-    {
-        $personal = DB::table('personal')
-            ->limit(10)
-            ->get();
-        return response()->json($personal);
-    }*/
-
-    public function index(Request $request)
-    {
-       // if(!$request->ajax()) return redirect('/');//si la peticion no es tipo ajax que nos rerotne a la pagina prncipal
-        //$usuarios = Usuario::all(); //con esta sentencia obtenemos todos los valores de la tabla usuario
-        //return $usuarios; //con esto retornamos los valores
-
+    public function index(Request $request){
+        if(!$request->ajax()) return redirect('/');
         $buscar = $request->buscar;
-        $criterio = $request->criterio;
 
-
-       /* if($buscar==''){
-            $personal = DB::table('personal')
-            ->orderBy('personal.id','desc')
-            ->paginate(10);
-            return response()->json($personal);
-        }
-        if($criterio == 'per_cm'){
-                $personal = DB::table('personal')
-                ->where('personal.per_cm','=', $buscar)
-                ->orderBy('personal.per_codigo','desc')
+        if($buscar == ''){
+            $personal = DB::table('personals')
+                ->leftjoin('personal_escalafones','personals.per_codigo','personal_escalafones.per_codigo')
+                ->leftjoin('escalafones','escalafones.id','personal_escalafones.esca_cod')
+                ->leftjoin('subescalafones','subescalafones.id','personal_escalafones.subesc_cod')
+                ->leftjoin('grados','grados.id','personal_escalafones.gra_cod')
+                ->leftjoin('personal_estudios','personal_estudios.per_codigo','personals.per_codigo')
+                ->leftjoin('estudios','estudios.id','personal_estudios.est_cod')
+                ->select('personals.per_codigo',
+                        DB::raw("CONCAT(personals.per_paterno,' ',personals.per_materno,' ',personals.per_nombre) as completo"),
+                        'personals.per_sexo',
+                        'personals.per_ci',
+                        'personals.per_cm',
+                        'personal_escalafones.gra_cod',
+                        'grados.abreviatura as gra_abreviatura',
+                        'estudios.abreviatura as estu_abreviatura',
+                        'personal_escalafones.estado as escperestado',
+                        'personal_estudios.id as estperestado')
+                ->where('personal_escalafones.estado',1)
+                ->where('personal_estudios.estado',1)
+                ->orderBy('grados.id','asc')
                 ->take(1)
                 ->paginate(10);
-                return response()->json($personal);
-        }
-        elseif($criterio == 'per_paterno'){
-                $personal = DB::table('personal')
-                ->where('personal.per_paterno','=', $buscar)
-                ->orderBy('personal.per_codigo','desc')
-                ->take(1)
-                ->paginate(10);
-                return response()->json($personal);
-            }
-            elseif($criterio == 'per_ci'){
-                $personal = DB::table('personal')
-                ->where('personal.per_ci','=', $buscar)
-                ->orderBy('personal.per_codigo','desc')
-                ->take(1)
-                ->paginate(10);
-                return response()->json($personal);
-            }*/
-            //return response()->json($personal);
-        if($buscar==''){
-            $personal = DB::table('personal')
-            ->join('escalafon_personal','personal.per_codigo','escalafon_personal.per_codigo')
-            ->join('escalafones','escalafones.esca_codigo','escalafon_personal.esca_codigo')
-            ->join('subescalafones','subescalafones.id','escalafon_personal.subesc_codigo')
-            ->join('grados','grados.id','escalafon_personal.gra_codigo')
-            ->join('estudio_personal','estudio_personal.per_codigo','personal.per_codigo')
-            ->join('estudio','estudio.id','estudio_personal.est_codigo')
-            ->select('personal.per_codigo',
-                    'personal.per_paterno',
-                    'personal.per_materno',
-                    'personal.per_nombre',
-                    'personal.per_sexo',
-                    'personal.per_ci',
-                    'personal.per_cm',
-                    'grados.gra_abreviatura',
-                    'estudio.estu_abreviatura',
-                    'escalafon_personal.estado as escperestado',
-                    'estudio_personal.id as estperestado')
-            ->where('escalafon_personal.estado',1)
-            ->where('estudio_personal.est_flag',1)
-            ->orderBy('personal.per_cm','asc')
-            ->take(1)
-            ->paginate(10);
-                
         }else{
-            $personal = DB::table('personal')
-            ->join('escalafon_personal','personal.per_codigo','escalafon_personal.per_codigo')
-            ->join('escalafones','escalafones.esca_codigo','escalafon_personal.esca_codigo')
-            ->join('subescalafones','subescalafones.id','escalafon_personal.subesc_codigo')
-            ->join('grados','grados.id','escalafon_personal.gra_codigo')
-            ->join('estudio_personal','estudio_personal.per_codigo','personal.per_codigo')
-            ->join('estudio','estudio.id','estudio_personal.est_codigo')
-            ->select('personal.per_codigo',
-                    'personal.per_paterno',
-                    'personal.per_materno',
-                    'personal.per_nombre',
-                    'personal.per_sexo',
-                    'personal.per_ci',
-                    'personal.per_cm',
-                    'grados.gra_abreviatura',
-                    'estudio.estu_abreviatura',
-                    'escalafon_personal.estado as escperestado',
-                    'estudio_personal.id as estperestado')
-            ->where('escalafon_personal.estado',1)
-            ->where('estudio_personal.est_flag',1)
-            ->where($criterio,'like','%'.$buscar.'%')
-            ->orderBy('personal.per_cm','asc')
-            ->take(1)
-            ->paginate(10);
+            $personal = DB::table('personals')
+                ->leftjoin('personal_escalafones','personals.per_codigo','personal_escalafones.per_codigo')
+                ->leftjoin('escalafones','escalafones.id','personal_escalafones.esca_cod')
+                ->leftjoin('subescalafones','subescalafones.id','personal_escalafones.subesc_cod')
+                ->leftjoin('grados','grados.id','personal_escalafones.gra_cod')
+                ->leftjoin('personal_estudios','personal_estudios.per_codigo','personals.per_codigo')
+                ->leftjoin('estudios','estudios.id','personal_estudios.est_cod')
+                ->select('personals.per_codigo',
+                        DB::raw("CONCAT(personals.per_paterno,' ',personals.per_materno,' ',personals.per_nombre) as completo"),
+                        'personals.per_sexo',
+                        'personals.per_ci',
+                        'personals.per_cm',
+                        'personal_escalafones.gra_cod',
+                        'grados.abreviatura as gra_abreviatura',
+                        'estudios.abreviatura as estu_abreviatura',
+                        'personal_escalafones.estado as escperestado',
+                        'personal_estudios.id as estperestado')
+                ->where('personal_escalafones.estado',1)
+                ->where('personal_estudios.estado',1)
+                ->where(function ( $query ) use ($buscar) {
+                    $query->orWhere('per_cm','like',$buscar.'%')
+                            ->orWhere('per_ci','like',$buscar.'%')
+                            ->orWhere( DB::raw("CONCAT(per_paterno,' ',per_materno,' ',per_nombre)"),'like',$buscar.'%');
+                })
+                ->orderBy('grados.id','asc')
+                ->take(1)
+                ->paginate(10);
         }
+
         return [
             'pagination' => [
                 'total'         => $personal->total(),
@@ -115,13 +72,50 @@ class PersonalController extends Controller
                 'last_page'     => $personal->lastPage(),
                 'from'          => $personal->firstItem(),
                 'to'            => $personal->lastItem(),
-            
+
             ],
             'personal' => $personal
         ];
+        // return response()->json($personal);
+    }
 
-       return response()->json($request);
-
-
+    public function  DatosPersonal(Request $request){
+        $per_codigo = $request->per_codigo;
+        $personal_datos = DB::table('personals')
+        ->leftjoin('personal_escalafones','personals.per_codigo','personal_escalafones.per_codigo')
+        ->leftjoin('escalafones','escalafones.id','personal_escalafones.esca_cod')
+        ->leftjoin('subescalafones','subescalafones.id','personal_escalafones.subesc_cod')
+        ->leftjoin('grados','grados.id','personal_escalafones.gra_cod')
+        ->leftjoin('personal_estudios','personal_estudios.per_codigo','personals.per_codigo')
+        ->leftjoin('estudios','estudios.id','personal_estudios.est_cod')
+        ->select('personals.per_codigo',
+                'personals.per_paterno',
+                'personals.per_materno',
+                'personals.per_nombre',
+                'personals.per_sexo',
+                'personals.per_ci',
+                'personals.per_expedido',
+                'personals.per_cm',
+                'personals.per_promo',
+                'personals.per_foto',
+                'grados.id as idgrado',
+                'personal_escalafones.gra_cod',
+                'grados.abreviatura as gra_abreviatura',
+                'estudios.abreviatura as estu_abreviatura',
+                'subescalafones.id as subescid',
+                'subescalafones.nombre',
+                'personal_escalafones.estado as escperestado',
+                'personal_estudios.estado as estperestado',
+                'escalafones.nombre as esca_nombre',
+                'subescalafones.nombre as subesca_nombre',
+                'grados.nombre as gra_nombre')
+        ->where('personals.per_codigo',$per_codigo)
+        ->where('personal_escalafones.estado',1)
+        ->where('personal_estudios.estado',1)
+       
+       // ->orderBy('personals.per_codigo','desc')
+        ->first();
+       // return response()->json($personal_datos);
+        return response()->json(['personal_datos' => $personal_datos]);
     }
 }

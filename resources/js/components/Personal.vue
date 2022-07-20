@@ -38,82 +38,64 @@
                     <div class="form-group row">
                         <div class="col-md-6">
                             <div class="input-group">
-                            <!-- select combo patr abuscar-->
-                                <select class="form-control col-md-4" v-model="criterio">
-                                    <!-- values como la base de datos -->
-                                    <option value="per_cm">CARNET MILITAR</option>
-                                    <option value="per_ci">CARNET DE IDENTIDAD</option>
-                                    <option value="per_paterno">APELLIDO PATERNO</option>
-                                </select>
-                                <input type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="TEXTO A BUSCAR">
-                                <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> BUSCAR</button>
+                                <input type="text" v-model="buscar" @keyup="buscarPersonal()" class="form-control" style="text-transform: uppercase"><br>
+                                <div class="input-group-text border-0" id="search-addon">
+                                    <i class="icon-magnifier"></i>
+                                </div>  
                             </div>
                         </div>
                     </div>
-                    <table class="table table-bordered table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th><center>OPCIONES</center></th>
-                                <th><center>CARNET MILITAR</center></th>
-                                <th><center>GRADO</center></th>
-                                <th><center>AP. PATERNO</center></th>
-                                <th><center>AP. MATERNO</center></th>
-                                <th><center>NOMBRES</center></th>
-                                
+                    <template v-if="arrayPersonal.length"> 
+                      <div class="table-wrapper-scroll-y my-custom-scrollbar" id="myTable" style="font-size: 16px;"> 
+                        <table class="table table-bordered table-striped table-sm">
+                          <thead>
+                            <tr> 
+                              <th style="text-align:center">Grado</th>
+                              <th style="text-align:center">Apellidos y Nombres</th>
+                              <th style="text-align:center">C. Militar</th>
+                              <th style="text-align:center">C. Identidad</th>
+                              <th style="text-align:center">Opciones</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="personal in arrayPersonal">
-                                <td>
-                                      <button type="button" class="btn btn-primary btn-sm" @click="EnvioDatos(personal.per_codigo)">
-                                          <i class="fa fa-eye" aria-hidden="true"></i>
-                                      </button> &nbsp;
-                                    <!--<template v-if="usuario.estado">
-                                        <button type="button" class="btn btn-danger btn-sm" @click="desactivarUsuario(usuario.id)" >
-                                        <i class="icon-trash"></i>
-                                    </button>
-                                    </template>
-                                    <template v-else>
-                                        <button type="button" class="btn btn-info btn-sm" @click="activarUsuario(usuario.id)">
-                                        <i class="icon-check"></i>
-                                    </button>
-                                    </template>-->
-                                </td>
-                                <td v-text="personal.per_cm" ></td>
-                                
-                                <!--<td v-text="personal.gra_abreviatura" ></td>-->
-                                <td>{{personal.gra_abreviatura}}{{personal.estu_abreviatura}}</td>
-                                <td v-text="personal.per_paterno"></td>
-                                <td v-text="personal.per_materno"></td>
-                                <td v-text="personal.per_nombre"></td>
-                                <!--<td>
-                                <div v-if="usuario.estado">
-                                    <span class="badge badge-success">Activo</span>
-                                </div>
-                                <div v-else>
-                                    <span class="badge badge-danger">Inactivo</span>
-                                </div>
-                                </td>-->
-                            </tr>
-                            
-                        </tbody>
-                    </table>
-                    <nav>
-                        <!-- inicio para paginacion -->
-                       <ul class="pagination">
-                            <li class="page-item" v-if="pagination.current_page > 1">
-                                <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                            </li>
-                            <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                            </li>
-                           
-                            <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                            </li>
+                          </thead>
+                          <tbody>
+                            <tr v-for="personal in arrayPersonal" :key="personal.per_codigo"> 
+                              <td style="text-align:left">{{personal.gra_abreviatura}}{{personal.estu_abreviatura}}</td>
+                              <td style="text-align:left" v-text="personal.completo"></td>
+                              <td style="text-align:center" v-text="personal.per_cm" ></td>
+                              <td style="text-align:center" v-text="personal.per_ci" ></td>
+                              <td style="text-align:center">
+                                <button type="button" class="btn btn-success btn-sm" @click="EnvioDatos(personal.per_codigo)" v-tooltip.top-center="'Datos'">
+                                  <i class="icon-arrow-right-circle" aria-hidden="true"></i>
+                                </button>
+                              </td>
+                            </tr>  
+                          </tbody>
+                        </table>
+                      </div>  
+                    </template>
+                    <template v-else>
+                        <div class="callout callout-info">
+                            <h5><i class="icon-hourglass"></i> No se encontraron resultados...</h5>
+                        </div>
+                    </template>
+                    <div class="form-group row">
+                      <nav>
+                            <!-- inicio para paginacion -->
+                        <ul class="pagination">
+                          <li class="page-item" v-if="pagination.current_page > 1">
+                              <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1)">Ant</a>
+                          </li>
+                          <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                              <a class="page-link" href="#" @click.prevent="cambiarPagina(page)" v-text="page"></a>
+                          </li>
+                          
+                          <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                              <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1)">Sig</a>
+                          </li>
                         </ul>
-                        <!-- fin paginacion -->
-                    </nav>
+                            <!-- fin paginacion -->
+                      </nav>
+                    </div>
                 </div>
               <!-- /.card -->
             </div>
@@ -134,6 +116,7 @@ export default {
     return {
       arrayPersonal : [],
       criterio : 'per_cm',
+      setTiemoutBuscador : '',
       buscar : '',
      // page : 0,
       pagination : {
@@ -148,7 +131,7 @@ export default {
     }
   },
   mounted() {
-    this.listarPersonal(this.page,this.buscar,this.criterio);
+    this.listarPersonal(this.page);
   },
         computed:{
             isActived: function(){
@@ -180,31 +163,40 @@ export default {
             }
         },
   methods: {
-    listarPersonal(page,buscar,criterio){
-            let me = this;
-            axios
-          .post("/listarPersonal", {
-            page : page,
-            buscar : buscar,
-            criterio : criterio,
-            
-          })
-          .then(function (response) {
-            console.log(response)
-            me.arrayPersonal = response.data.personal.data
-            me.pagination = response.data.pagination;
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          })
+    listarPersonal(page){
+        let me = this;
+        axios
+        .post("/PersonalList", {
+          page : page,
+          buscar : me.buscar.toUpperCase(),
+          // criterio : criterio,
+          
+        })
+        .then(function (response) {
+         // console.log(response)
+          me.arrayPersonal = response.data.personal.data
+          me.pagination = response.data.pagination;
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+      },
+
+        buscarPersonal(){
+          clearTimeout(this.setTiemoutBuscador);
+          this.setTiemoutBuscador = setTimeout(() => {
+              this.listarPersonal(1)
+              // console.log(this.buscar);
+          }, 360)
         },
-        cambiarPagina(page, buscar, criterio){
+
+        cambiarPagina(page){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page= page;
                 //Envia la peticion para visualizar  la data de esa pagina
-                me.listarPersonal(page, buscar, criterio);
+                me.listarPersonal(page);
             },
         EnvioDatos(datos){
             this.$router.push({

@@ -4,7 +4,7 @@
     <a href="" class="brand-link">
         {{-- <img src="../../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8"> --}}
-        <span class="brand-text font-weight-light"><strong>MENU</strong> </span>
+        <span class="brand-text font-weight-light"><strong>ASIGNACIÓN DE DESTINOS</strong> </span>
     </a>
 
     <!-- Sidebar -->
@@ -12,7 +12,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="info">
-                <a href="#" class="d-block">Usuario</a>
+                <a href="#" class="d-block">MENU</a>
             </div>
         </div>
 
@@ -21,11 +21,11 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
         with font-awesome or any other icon font library -->
-                {{-- <li class="nav-item has-treeview">
+                <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="far fa-clipboard"></i>&nbsp;
                         <p>
-                            FOJA DE CONCEPTO
+                            INICIO
                             <i class="fa fa-angle-left right"></i>
                         </p>
                     </a>
@@ -35,12 +35,12 @@
                         </li>
                         
                     </ul>
-                </li> --}}
+                </li>
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                     <i class="fas fa-school"></i>
                         <p>
-                            COLEGIOS
+                            DESTINOS
                             <i class="fa fa-angle-left right"></i>
                         </p>
                     </a>
@@ -71,7 +71,7 @@
                         <!-- </li> -->
                         <li class="nav-item">
                             <!--to='INDICA EL PATH EN ARCHIVO routes.js'-->
-                            <router-link class="nav-link" to='/listarColegios'><i class="fas fa-globe-americas"></i> &nbsp;&nbsp;<p>Unidad Educativa</p> </router-link>
+                            <router-link class="nav-link" to='/listarPersonal'><i class="fas fa-globe-americas"></i> &nbsp;&nbsp;<p>Personal Destinos</p> </router-link>
                         </li>
                         
                     </ul>

@@ -23,9 +23,9 @@ export default new Router ({
         },*/
 
         {
-            path: '/listarColegios',
-            name: 'Colegios',
-            component: require('./components/Colegio.vue').default
+            path: '/listarPersonal',
+            name: 'Personal',
+            component: require('./components/Personal.vue').default
         },
 
         {
